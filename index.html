@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div x-data="data" x-cloak>
+    <template x-for="(item, index) in getItems">
+      <div>
+        <span x-text="item.message"></span>
+        <button x-on:click="remoteItem(index)">Excluir</button>
+      </div>
+    </template>
+    <div>
+      <input type="text" x-model="message" x-ref="message" value="" />
+    </div>
+    <div>
+      <button x-on:click="addItem()" x-bind:disabled="messageDisabled">Inserir</button>
+    </div>   
+  </div>
+  <script src="//unpkg.com/alpinejs" defer></script>
+  <script>
+    document.addEventListener('alpine:init', function() {
+      Alpine.data('data', function() {
+        return {
+          init() {
+            console.log('I am called automatically');
+          },
+          items: [], 
+          message: '',
+          get getItems() {
+            return this.items;
+          },
+          get messageDisabled(){ 
+            return this.message.trim().length === 0
+          },
+          addItem() { 
+            if (this.message.trim().length > 0){
+              this.items.push({'message': this.message}); 
+              this.message = ''; 
+              this.$refs.message.focus(); 
+            }
+          },
+          remoteItem(index) {
+            this.items.splice(index, 1);
+          }
+        }
+      });
+    });    
+  </script>
+</body>
+</html>
